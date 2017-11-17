@@ -1,0 +1,12 @@
+docker-machine stop Char;
+VBoxManage sharedfolder add Char --name "home" -hostpath $HOME;
+docker-machine start Char;
+docker-machine ssh Char "sudo mkdir -p /goinfre/emmmhla; sudo mount -t vboxsf home /goinfre/emmmhla"
+docker run --name Abathur -dit -p 3000:3000 -v /goinfre/emmmhla:/root --env FLASK_APP=/root/app.py python:2-slim
+docker exec Abathur pip install Flask && \
+echo "from flask import Flask
+app = Flask(__name__)
+@app.route('/')
+def hello_world():
+    return '<h1>Hello World</h1>'" > ~/app.py
+docker exec Abathur flask run -h 0.0.0.0 -p 3000
